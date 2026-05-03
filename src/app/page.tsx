@@ -925,7 +925,7 @@ export default function PortfolioPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              variant="secondary"
+             
               onClick={() => router.push('/auth/register')}
               className="bg-white text-white hover:bg-slate-100"
             >
@@ -934,7 +934,7 @@ export default function PortfolioPage() {
             </Button>
             <Button
               size="lg"
-              variant="outline"
+              
               className="border-white text-white hover:bg-white/10"
               onClick={() => window.open('https://github.com/Alisson-aguiar', '_blank')}
             >
@@ -943,7 +943,7 @@ export default function PortfolioPage() {
             </Button>
             <Button
               size="lg"
-              variant="outline"
+             
               className="border-white text-white hover:bg-white/10"
               onClick={() => window.location.href = 'mailto:alissonaguiars2k10@gmail.com'}
             >
@@ -952,9 +952,9 @@ export default function PortfolioPage() {
             </Button>
             <Button
               size="lg"
-              variant="outline"
+              
               className="border-white text-white hover:bg-white/10"
-              onClick={() => window.open('https://linkedin.com/in/alisson-aguiar', '_blank')}
+              onClick={() => window.open('https://www.linkedin.com/in/alisson-aguiars2k/', '_blank')}
             >
               <Linkedin className="mr-2 h-4 w-4" />
               LinkedIn

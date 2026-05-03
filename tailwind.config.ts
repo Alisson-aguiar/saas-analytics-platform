@@ -16,6 +16,9 @@ const config = {
                 "2xl": "1400px",
             },
         },
+        corePlugins: {
+            cursor: true, 
+        },
         extend: {
             colors: {
                 border: "hsl(var(--border))",

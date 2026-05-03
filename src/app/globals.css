@@ -661,3 +661,25 @@ button[data-variant="ghost"] {
 button[data-variant="ghost"]:hover {
   background-color: hsl(var(--accent));
 }
+
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+[role="button"],
+a.button,
+.btn {
+  cursor: pointer !important;
+}
+
+/* Para botões do shadcn/ui */
+[data-slot="button"] {
+  cursor: pointer !important;
+}
+
+/* Remove cursor pointer de elementos desabilitados */
+button:disabled,
+[data-slot="button"]:disabled {
+  cursor: not-allowed !important;
+}
