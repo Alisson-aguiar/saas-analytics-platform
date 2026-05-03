@@ -14,13 +14,18 @@ export function useNotifications() {
     const [realtimeChannel, setRealtimeChannel] = useState<any>(null);
 
     const loadNotifications = useCallback(async () => {
-        if (!session?.user?.id) return;
+        if (!session?.user?.email && !session?.user?.id) {
+            setLoading(false);
+            return;
+        }
 
         try {
             setLoading(true);
+            // Usar email como identificador (mais confiável que o ID do Google)
+            const identifier = session.user.email || session.user.id;
             const [data, count] = await Promise.all([
-                notificationService.getUserNotifications(session.user.id),
-                notificationService.getUnreadCount(session.user.id)
+                notificationService.getUserNotifications(identifier),
+                notificationService.getUnreadCount(identifier)
             ]);
             setNotifications(data);
             setUnreadCount(count);
@@ -29,7 +34,7 @@ export function useNotifications() {
         } finally {
             setLoading(false);
         }
-    }, [session?.user?.id]);
+    }, [session?.user?.email, session?.user?.id]);
 
     const markAsRead = useCallback(async (notificationId: string) => {
         const success = await notificationService.markAsRead(notificationId);
@@ -45,8 +50,8 @@ export function useNotifications() {
     }, []);
 
     const markAllAsRead = useCallback(async () => {
-        if (!session?.user?.id) return false;
-        const success = await notificationService.markAllAsRead(session.user.id);
+        if (!session?.user?.email) return false;
+        const success = await notificationService.markAllAsRead(session.user.email);
         if (success) {
             setNotifications(prev =>
                 prev.map(n => ({ ...n, read: true }))
@@ -55,7 +60,7 @@ export function useNotifications() {
             toast.success("Todas as notificações marcadas como lidas");
         }
         return success;
-    }, [session?.user?.id]);
+    }, [session?.user?.email]);
 
     const deleteNotification = useCallback(async (notificationId: string) => {
         const success = await notificationService.deleteNotification(notificationId);
@@ -72,58 +77,65 @@ export function useNotifications() {
 
     // Configurar inscrição em tempo real
     useEffect(() => {
-        if (!session?.user?.id) return;
+        if (!session?.user?.email) return;
 
-        loadNotifications();
+        const setupRealtime = async () => {
+            const identifier = session.user.email || session.user.id;
+            const realUserId = await notificationService['getUserId'](identifier);
 
-        // Inscrever para novas notificações em tempo real
-        const channel = supabase
-            .channel(`notifications-${session.user.id}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'notifications',
-                    filter: `user_id=eq.${session.user.id}`
-                },
-                (payload: any) => {
-                    const newNotification = payload.new;
-                    const notification: Notification = {
-                        id: newNotification.id,
-                        userId: newNotification.user_id,
-                        title: newNotification.title,
-                        message: newNotification.message,
-                        type: newNotification.type,
-                        read: newNotification.read,
-                        metadata: newNotification.metadata || {},
-                        createdAt: new Date(newNotification.created_at)
-                    };
+            if (!realUserId) return;
 
-                    setNotifications(prev => [notification, ...prev]);
-                    setUnreadCount(prev => prev + 1);
+            loadNotifications();
 
-                    // Mostrar toast de nova notificação
-                    toast.info(notification.title, {
-                        description: notification.message,
-                        duration: 5000,
-                        action: {
-                            label: "Ver",
-                            onClick: () => window.location.href = '/dashboard/notifications'
-                        }
-                    });
+            const channel = supabase
+                .channel(`notifications-${realUserId}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'notifications',
+                        filter: `user_id=eq.${realUserId}`
+                    },
+                    (payload: any) => {
+                        const newNotification = payload.new;
+                        const notification: Notification = {
+                            id: newNotification.id,
+                            userId: newNotification.user_id,
+                            title: newNotification.title,
+                            message: newNotification.message,
+                            type: newNotification.type,
+                            read: newNotification.read,
+                            metadata: newNotification.metadata || {},
+                            createdAt: new Date(newNotification.created_at)
+                        };
+
+                        setNotifications(prev => [notification, ...prev]);
+                        setUnreadCount(prev => prev + 1);
+
+                        toast.info(notification.title, {
+                            description: notification.message,
+                            duration: 5000,
+                            action: {
+                                label: "Ver",
+                                onClick: () => window.location.href = '/dashboard/notifications'
+                            }
+                        });
+                    }
+                )
+                .subscribe();
+
+            setRealtimeChannel(channel);
+
+            return () => {
+                if (channel) {
+                    supabase.removeChannel(channel);
                 }
-            )
-            .subscribe();
-
-        setRealtimeChannel(channel);
-
-        return () => {
-            if (channel) {
-                supabase.removeChannel(channel);
-            }
+            };
         };
-    }, [session?.user?.id, loadNotifications]);
+
+        setupRealtime();
+    }, [session?.user?.email, loadNotifications]);
 
     return {
         notifications,

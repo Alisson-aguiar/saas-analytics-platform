@@ -1,6 +1,6 @@
 # 📊 AnalyticsPro - Plataforma SaaS de Análise de Dados
 
-![AnalyticsPro Banner](https://via.placeholder.com/1200x400/1e40af/ffffff?text=AnalyticsPro)
+![AnalyticsPro Banner](/public/images/tela_dashboard.jpg)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
@@ -23,6 +23,45 @@ Este projeto foi desenvolvido como portfólio para demonstrar competências em:
 - UI/UX com Tailwind CSS e shadcn/ui
 - Implementação de funcionalidades complexas (webhooks, notificações em tempo real)
 - Testes automatizados com Jest e React Testing Library
+
+---
+
+## 📸 Capturas de Tela
+
+### Dashboard Principal
+![Dashboard](/public/images/tela_dashboard.jpg)
+
+*Dashboard com métricas em tempo real, gráficos interativos e atividades recentes.*
+
+### Análises de Dados
+![Análises](/public/images/tela_analises.jpg)
+
+*Gráficos interativos, filtros por período e visualizações detalhadas.*
+
+### Upload de Dados
+![Upload de Dados](/public/images/tela_enviar_dados.jpg)
+
+*Upload de arquivos CSV/Excel com preview instantâneo e análise estatística.*
+
+### Relatórios Personalizados
+![Relatórios](/public/images/tela_relatorios.jpg)
+
+*Criação, edição e exportação de relatórios em PDF/PNG.*
+
+### Gestão de Equipe
+![Equipe](/public/images/tela_equipe.jpg)
+
+*Convites, papéis e permissões para colaboração em equipe.*
+
+### Configurações
+![Configurações](/public/images/tela_configuracoes.jpg)
+
+*Perfil, aparência, notificações, segurança e API Keys.*
+
+### Integrações
+![Integrações](/public/images/tela_integracoes.jpg)
+
+*Webhooks, Google Sheets e integrações com serviços externos.*
 
 ---
 

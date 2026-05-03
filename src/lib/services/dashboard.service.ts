@@ -103,20 +103,33 @@ export class DashboardService {
             for (let i = months - 1; i >= 0; i--) {
                 const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
                 const monthName = monthNames[month.getMonth()];
-                const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1).toISOString();
-                const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0, 23, 59, 59).toISOString();
+                const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
+                const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0, 23, 59, 59);
+
+                // Formatar datas para ISO string
+                const startStr = startOfMonth.toISOString();
+                const endStr = endOfMonth.toISOString();
+
+                console.log(`🔍 Buscando dados para ${monthName}:`, { startStr, endStr });
 
                 const { count, error } = await supabase
                     .from('analytics_queries')
                     .select('*', { count: 'exact', head: true })
                     .eq('user_id', userId)
-                    .gte('time', startOfMonth)
-                    .lte('time', endOfMonth);
+                    .gte('time', startStr)
+                    .lte('time', endStr);
 
                 if (error) {
-                    console.error(`Erro ao buscar dados para ${monthName}:`, error);
+                    console.error(`❌ Erro ao buscar dados para ${monthName}:`, {
+                        message: error.message,
+                        details: error.details,
+                        code: error.code
+                    });
+                    data.push({ month: monthName, value: 0 });
+                    continue;
                 }
 
+                console.log(`📊 ${monthName}: ${count} registros`);
                 data.push({
                     month: monthName,
                     value: count || 0
@@ -125,8 +138,16 @@ export class DashboardService {
 
             return data;
         } catch (error) {
-            console.error("Erro ao buscar dados de tráfego:", error);
-            return [];
+            console.error("❌ Erro ao buscar dados de tráfego:", error);
+            // Retornar dados de exemplo para não quebrar o dashboard
+            return [
+                { month: "Jan", value: 0 },
+                { month: "Fev", value: 0 },
+                { month: "Mar", value: 0 },
+                { month: "Abr", value: 0 },
+                { month: "Mai", value: 0 },
+                { month: "Jun", value: 0 }
+            ];
         }
     }
 
