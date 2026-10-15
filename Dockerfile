@@ -7,7 +7,7 @@
 # - Cache de camadas otimizado
 # ============================================
 
-FROM node:20-alpine
+FROM node:25-alpine
 
 # ============================================
 # 1. METADADOS
