@@ -120,11 +120,15 @@ export class DashboardService {
                     .lte('time', endStr);
 
                 if (error) {
-                    console.error(`❌ Erro ao buscar dados para ${monthName}:`, {
-                        message: error.message,
-                        details: error.details,
-                        code: error.code
-                    });
+                    
+                    if (process.env.NODE_ENV !== 'test') {
+                        console.error(`❌ Erro ao buscar dados para ${monthName}:`, {
+                            message: error.message,
+                            details: error.details,
+                            code: error.code
+                        });
+                    }
+
                     data.push({ month: monthName, value: 0 });
                     continue;
                 }
