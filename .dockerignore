@@ -1,0 +1,49 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Next.js
+.next
+out
+build
+dist
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.docker
+
+# Tests
+coverage
+.nyc_output
+
+# Git
+.git
+.gitignore
+.github
+
+# Editor
+.vscode
+.idea
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+README.md
+LICENSE
+*.md
+!README.docker.md
+
+# Vercel
+.vercel
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore

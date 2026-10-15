@@ -1,24 +1,97 @@
-version: '3.8'
 
 services:
+  # ============================================
+  # App Next.js (dev)
+  # ============================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: analytics-app-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+      - WATCHPACK_POLLING=true
+    env_file:
+      - .env.local
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - analytics-network
+
+  # ============================================
+  # Redis (cache / filas)
+  # ============================================
   redis:
     image: redis:7-alpine
+    container_name: analytics-redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - analytics-network
 
+  # ============================================
+  # PostgreSQL + TimescaleDB (opcional — só se não usar Supabase)
+  # ============================================
   postgres:
     image: timescale/timescaledb:latest-pg15
+    container_name: analytics-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: analytics
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin123
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d analytics"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - analytics-network
+
+  # ============================================
+  # Redis Commander (UI para inspecionar Redis)
+  # ============================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: analytics-redis-ui
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - analytics-network
 
 volumes:
   redis_data:
+    driver: local
   postgres_data:
+    driver: local
+
+networks:
+  analytics-network:
+    driver: bridge
