@@ -30,11 +30,11 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund --legacy-peer-deps
+        run: npm install --no-audit --no-fund
 
       - name: Run ESLint
-        run: npm run lint --if-present
-        continue-on-error: true
+  run: npm run lint --if-present
+  continue-on-error: true
 
       - name: Run TypeScript check
         run: npx tsc --noEmit
@@ -59,7 +59,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund --legacy-peer-deps
+        run: npm install --no-audit --no-fund
 
       - name: Run tests with coverage
         run: npm run test:coverage
@@ -99,7 +99,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund --legacy-peer-deps
+        run: npm install --no-audit --no-fund
 
       - name: Build Next.js
         run: npm run build

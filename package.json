@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --dir src",
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -66,6 +66,7 @@
     "react-hook-form": "^7.71.1",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
+    "react-is": "^19.0.0",
     "recharts": "^3.7.0",
     "resend": "^6.9.1",
     "sonner": "^2.0.7",
@@ -79,9 +80,10 @@
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@tailwindcss/postcss": "^4.0.0",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/dom": "10.4.0",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
     "@types/bcryptjs": "^3.0.0",
     "@types/html2canvas": "^1.0.0",
     "@types/jest": "^30.0.0",
@@ -111,6 +113,6 @@
     "typescript": "5.4.5"
   },
   "optionalDependencies": {
-    "lightningcss": "^1.33.0"
+    "lightningcss": "^1.28.2"
   }
 }
